@@ -2,7 +2,7 @@
 // 三者我们都不能如实提供；verify-build 会拦）。开售后再按购买页价格加回 Product + Offer。
 import { SITE } from '../../../scripts/paths.mjs';
 import { canonical } from '../i18n/urls.js';
-import { EMAIL_PRIMARY, MELSPECTRUM, LEGAL_ZH } from '../data/site.js';
+import { EMAIL_PRIMARY, MELSPECTRUM, XIAOHONGSHU, LEGAL_ZH } from '../data/site.js';
 
 export const ORG_ID = `${SITE.origin}/#organization`;
 
@@ -13,7 +13,7 @@ export const organization = () => ({
   alternateName: ['MelSpectrum', 'Piano Tuner'],
   url: SITE.origin + '/',
   logo: SITE.origin + '/apple-touch-icon-202609.png',
-  sameAs: [MELSPECTRUM],
+  sameAs: [MELSPECTRUM, XIAOHONGSHU],
   contactPoint: { '@type': 'ContactPoint', contactType: 'customer support', email: EMAIL_PRIMARY, availableLanguage: ['zh-CN', 'en'] },
 });
 

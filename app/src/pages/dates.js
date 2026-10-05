@@ -6,7 +6,7 @@
 // 缺省：lastmod ← updated ← published。prerender 与 verify-build 都会拦不合法的组合。
 
 /** Nav / Footer 等全站共用链接最后一次变化的日期：所有页面 lastmod 的下限。改全站链接时改这里。 */
-export const SITE_LINKS_CHANGED = '2026-10-01';
+export const SITE_LINKS_CHANGED = '2026-10-05';
 
 const ISO = /^\d{4}-\d{2}-\d{2}$/;
 

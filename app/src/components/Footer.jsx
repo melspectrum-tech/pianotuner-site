@@ -1,7 +1,7 @@
 import { useT } from '../i18n';
 import { href } from '../i18n/urls';
 import { LangToggle } from './Nav';
-import { TESTFLIGHT, MELSPECTRUM, EMAIL_PRIMARY, EMAIL_BUSINESS, LEGAL_ZH, LEGAL_EN } from '../data/site';
+import { TESTFLIGHT, MELSPECTRUM, XIAOHONGSHU, EMAIL_PRIMARY, EMAIL_BUSINESS, LEGAL_ZH, LEGAL_EN } from '../data/site';
 import { GUIDES } from '../data/guides';
 
 export default function Footer({ page }) {
@@ -32,6 +32,7 @@ export default function Footer({ page }) {
           <h3 className="t-ui">{t('公司', 'COMPANY')}</h3>
           <a href={href(lang, 'about')}>{t('关于我们', 'About')}</a>
           <a href={MELSPECTRUM} target="_blank" rel="noopener noreferrer">MELSPECTRUM.COM ↗</a>
+          <a href={XIAOHONGSHU} target="_blank" rel="noopener noreferrer">{t('小红书 ↗', 'XIAOHONGSHU ↗')}</a>
           <a href={href(lang, 'privacy')}>{t('隐私政策', 'Privacy')}</a>
           <a href={href(lang, 'terms')}>{t('服务条款', 'Terms')}</a>
         </div>
