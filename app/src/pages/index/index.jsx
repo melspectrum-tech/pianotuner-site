@@ -18,7 +18,7 @@ import { graph, organization, ORG_ID } from '../schema';
 
 export const meta = {
   published: '2026-09-05',
-  updated: '2026-09-27',
+  updated: '2026-10-23',
   navTheme: 'dark',
   ogType: 'product',
   zh: {
@@ -262,11 +262,11 @@ function BuiltForYou() {
   const cards = [
     { num: '01 · MIC COACH', title: t('麦克风摆位引导', 'Mic-placement coach'), desc: t('5 星实时评级帮你找到最佳采集位置，零基础也能采到专业级数据。', 'A live 5-star meter guides you to the best spot — pro-grade data, no experience needed.') },
     { num: '02 · HISTORY', title: t('多琴档案 · 历史趋势', 'Multi-piano history'), desc: t('按琴保存档案与误差趋势：琴主看琴变好，调律师多一份随身客户档案。', 'Per-piano profiles and error trends — owners watch it improve, pros get a pocket CRM.') },
-    { num: '03 · OPT-IN', title: t('数据飞轮（可选 · 匿名）', 'Data flywheel (opt-in)'), desc: t('授权后匿名贡献数据助算法进化，默认关闭、随时可关。', 'Opt in to share anonymous data and help the algorithm improve — off by default, always optional.') },
+    { num: '03 · DATA', title: t('数据飞轮（去标识化 · 可关闭）', 'Data flywheel (de-identified)'), desc: t('去标识化的调律数据帮助算法进化，不含录音，随时可在应用里关闭。', 'De-identified tuning data helps the algorithm improve — no recordings, and you can switch it off in the app anytime.') },
   ];
   const privacy = [
     { k: t('端侧本地计算', 'Computed on-device'), v: t('个性化曲线在 iPhone 本机生成，全程无需联网。', 'Your personalized curve is generated on your iPhone — no internet required.') },
-    { k: t('匿名 · 默认关闭', 'Anonymous · off by default'), v: t('是否贡献匿名数据完全由你决定，随时可关。', 'Sharing anonymous data is entirely your choice — toggle it off anytime.') },
+    { k: t('去标识化 · 随时可关', 'De-identified · off anytime'), v: t('贡献的数据不含录音、姓名和联系方式，开关随时由你决定。', 'Contributed data carries no recordings, names or contact details — switch it off whenever you like.') },
     { k: t('不卖数据 · 不追踪', 'No selling · no tracking'), v: t('我们从不出售个人数据，也没有第三方广告追踪。', 'We never sell personal data and run no third-party ad tracking.') },
   ];
   return (
