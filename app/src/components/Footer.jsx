@@ -12,7 +12,7 @@ export default function Footer({ page }) {
         <div className="footer__col">
           <h3 className="t-ui">{t('产品', 'PRODUCT')}</h3>
           <a href={href(lang, 'index')}>{t('首页', 'Home')}</a>
-          <a href={href(lang, 'pro')}>{t('专业版', 'Pro')}</a>
+          <a href={href(lang, 'pro')} data-umami-event="cta-pro" data-umami-event-at="footer">{t('专业版', 'Pro')}</a>
           <a href={href(lang, 'demo')}>{t('实测演示', 'Demo')}</a>
           <a href={href(lang, 'buy')} data-umami-event="cta-waitlist" data-umami-event-at="footer">{t('加入候补名单', 'Join the waitlist')}</a>
           <a href={TESTFLIGHT} target="_blank" rel="noopener noreferrer" data-umami-event="cta-testflight" data-umami-event-at="footer">TESTFLIGHT ↗</a>

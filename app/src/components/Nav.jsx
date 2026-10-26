@@ -13,6 +13,9 @@ const LINKS = [
   { id: 'contact', zh: '联系', en: 'Contact' },
 ];
 
+// 导航里的「专业版」也算 cta-pro（2026-10-26 前只有首页正文按钮在记，Pro 页入口大多来自导航）。
+const proEvent = (id) => (id === 'pro' ? { 'data-umami-event': 'cta-pro', 'data-umami-event-at': 'nav' } : {});
+
 const remember = (l) => { try { localStorage.setItem('pt_lang', l); } catch { /* ignore */ } };
 
 /** 语言开关：两个真 <a>（中键/新标签/复制链接都对），点击记住偏好。 */
@@ -71,7 +74,7 @@ function MobileMenu({ open, onClose, openerRef, page }) {
         </div>
         <a href={href(lang, 'index')} style={{ '--i': 1 }}>{t('首页', 'Home')}</a>
         {LINKS.map((l, n) => (
-          <a key={l.id} href={href(lang, l.id)} aria-current={page === l.id ? 'page' : undefined} style={{ '--i': n + 2 }}>{t(l.zh, l.en)}</a>
+          <a key={l.id} href={href(lang, l.id)} aria-current={page === l.id ? 'page' : undefined} style={{ '--i': n + 2 }} {...proEvent(l.id)}>{t(l.zh, l.en)}</a>
         ))}
         <a href={href(lang, 'buy')} style={{ '--i': LINKS.length + 2 }} data-umami-event="cta-waitlist" data-umami-event-at="nav">{t('加入候补名单', 'Join the waitlist')}</a>
         <div className="menu__foot" style={{ '--i': LINKS.length + 3 }}>
@@ -99,7 +102,7 @@ export default function Nav({ theme = 'dark', page }) {
           <div className="nav__spacer" />
           <div className="nav__links t-ui">
             {LINKS.map((l) => (
-              <a key={l.id} className="nav__link" href={href(lang, l.id)} aria-current={page === l.id ? 'page' : undefined}>
+              <a key={l.id} className="nav__link" href={href(lang, l.id)} aria-current={page === l.id ? 'page' : undefined} {...proEvent(l.id)}>
                 {t(l.zh, l.en)}
               </a>
             ))}

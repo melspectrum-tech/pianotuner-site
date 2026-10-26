@@ -191,6 +191,7 @@
 @media (min-width: 768px) { .hero__foot { grid-template-columns: repeat(12, minmax(0, 1fr)); } }
 .hero__sub { grid-column: 1 / -1; color: var(--color-alabaster); max-width: 46ch; }
 @media (min-width: 768px) { .hero__sub { grid-column: 1 / span 5; } }
+.hero__status { display: block; margin-top: 16px; color: var(--accent-text); }
 .hero__actions { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 24px; align-items: center; }
 @media (min-width: 768px) { .hero__actions { grid-column: 7 / span 6; justify-content: flex-end; } }
 .hero__cue { display: flex; align-items: center; gap: 10px; color: var(--color-ash); margin-top: 32px; }
@@ -331,6 +332,21 @@
 .menu__close { cursor: pointer; padding: 8px; }
 .menu a { text-decoration: none; padding: 14px 0; border-bottom: 1px dashed var(--color-gunmetal); font-weight: 300; font-size: 1.5rem; letter-spacing: -0.02em; }
 .menu__foot { margin-top: auto; display: flex; gap: 16px; align-items: center; flex-wrap: wrap; }
+
+/* ---------------- TestFlight 扫码层（仅桌面，native <dialog>，2026-10-26） ---------------- */
+.tfqr {
+  border: 1px solid var(--color-alabaster);
+  padding: 0;
+  width: min(380px, calc(100% - 32px));
+  background: var(--color-white);
+  color: var(--color-black);
+}
+.tfqr::backdrop { background: rgba(22, 20, 15, 0.6); }
+.tfqr__inner { padding: 24px; display: flex; flex-direction: column; align-items: center; gap: 12px; text-align: center; }
+.tfqr__top { align-self: stretch; display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.tfqr__code { width: 220px; height: 220px; image-rendering: pixelated; }
+.tfqr__title { font-size: 1.25rem; font-weight: 400; letter-spacing: -0.01em; }
+.tfqr__note { color: var(--color-charcoal); max-width: 32ch; }
 
 /* ---------------- fixed bottom progress bar ---------------- */
 .progress {

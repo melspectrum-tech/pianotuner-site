@@ -7,12 +7,12 @@ import Scramble from '../../components/Scramble';
 import PageHero from '../../components/PageHero';
 import { BracketLink, Button, Eyebrow, SectionHead } from '../../components/ui';
 import { useStackDeck } from '../../lib/motion/hooks';
-import { EMAIL_PRIMARY, MELSPECTRUM } from '../../data/site';
+import { EMAIL_PRIMARY, MELSPECTRUM, TESTFLIGHT } from '../../data/site';
 import { graph, organization, breadcrumb } from '../schema';
 
 export const meta = {
   published: '2026-09-05',
-  updated: '2026-10-01',
+  updated: '2026-10-26',
   navTheme: 'dark',
   zh: { title: '关于我们：钢琴调音机器人背后的团队 | Piano Tuner', desc: '融谱智能科技（深圳）有限公司，品牌 MelSpectrum。为专业调律师打造的自动调音器：硬件 · 软件 · 端侧 AI，三位一体。' },
   en: { title: 'About Us: The Team Behind the Piano Tuning Robot | Piano Tuner', desc: '融谱智能科技（深圳）有限公司, operating under the MelSpectrum brand. An automatic piano tuner built for pros: hardware, software and on-device AI in one.' },
@@ -140,6 +140,8 @@ export default function About() {
           </div>
           <div className="cta__links" style={{ marginTop: 32 }}>
             <Button href={href(lang, 'buy')} data-umami-event="cta-waitlist" data-umami-event-at="about">{t('加入候补名单', 'Join the waitlist')}</Button>
+            <BracketLink href={href(lang, 'demo')}>{t('看实测演示', 'Watch the demo')}</BracketLink>
+            <BracketLink href={TESTFLIGHT} external data-umami-event="cta-testflight" data-umami-event-at="about">{t('下载 App 试用', 'Try the app')}</BracketLink>
             <BracketLink href={MELSPECTRUM} external>{t('公司官网 melspectrum.com', 'Company site melspectrum.com')}</BracketLink>
           </div>
         </div>

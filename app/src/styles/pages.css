@@ -237,11 +237,7 @@
 .legal__sec ul { padding-left: 18px; margin: 0 0 10px; }
 @media (max-width: 599px) { .legal__sec { grid-template-columns: 1fr; } }
 
-/* ---------- 团队 monogram（about）与占位方块 ---------- */
-.mono-block {
-  display: grid; place-items: center; background: var(--color-black); color: var(--accent-fill);
-  font-weight: 300; letter-spacing: 0.02em; aspect-ratio: 16 / 9; font-size: clamp(1.5rem, 1rem + 2vw, 2.5rem);
-}
+/* ---------- 团队 monogram（about） ---------- */
 .person__top { display: flex; align-items: center; gap: 18px; }
 .person__mono {
   width: 64px; height: 64px; flex: none; display: grid; place-items: center;
@@ -300,10 +296,10 @@
 .video-frame { position: relative; }
 .video-frame__play { position: absolute; inset: 8px 8px 64px; display: grid; place-items: center; background: transparent; border: 0; padding: 0; cursor: pointer; color: var(--color-white); font: inherit; }
 .video-frame__play .blink { font-size: 1rem; }
-
-/* ---------- 「即将上线」占位卡：与真实内容拉开层级 ---------- */
-.card--soon { opacity: 0.6; }
-.card--soon .t-h3 { font-weight: 300; }
+.video-frame__end { position: absolute; inset: 8px 8px 64px; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 20px; padding: 24px; text-align: center; background: rgba(22, 20, 15, 0.86); color: var(--color-white); }
+.video-frame__end .product__actions { justify-content: center; }
+.video-frame__replay { background: none; border: 0; padding: 0; cursor: pointer; color: var(--color-ash); }
+@media (max-width: 719px) { .video-frame__end { position: static; margin-top: 8px; } }
 
 /* ---------- FAQ 展开动效：高度由 useFaqAccordion 补间 ---------- */
 .faq__body { overflow: hidden; }

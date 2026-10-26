@@ -9,10 +9,11 @@ import PrecisionNote from '../../components/PrecisionNote';
 import { Arrow, BracketLink, Eyebrow, Fn, SectionHead } from '../../components/ui';
 import { useTextReveal, useReveal } from '../../lib/motion/hooks';
 import { track } from '../../lib/analytics';
+import { TESTFLIGHT } from '../../data/site';
 
 export const meta = {
   published: '2026-09-05',
-  updated: '2026-09-27',
+  updated: '2026-10-26',
   navTheme: 'dark',
   zh: { title: '演示视频 | Piano Tuner', desc: 'Piano Tuner V1.0 调音器原型实测演示：蓝牙连接、采集音频、生成专属调音曲线，再驱动机械执行端拧弦——全程自动。' },
   en: { title: 'Live Demo | Piano Tuner', desc: 'Piano Tuner V1.0 prototype demo: connects over Bluetooth, captures the audio, builds a custom tuning curve, then drives the actuator to turn the pins — all automatic.' },
@@ -33,6 +34,7 @@ export default function Demo() {
   const root = useRef(null);
   const video = useRef(null);
   const [started, setStarted] = useState(false);
+  const [ended, setEnded] = useState(false);
   const sent = useRef({});
   // 每次页面加载各最多一次；完播率用 Umami Funnel demo-play → demo-complete 算，不用次数相除。
   const once = (ev) => { if (!sent.current[ev]) { sent.current[ev] = true; track(ev); } };
@@ -62,7 +64,7 @@ export default function Demo() {
       <section className="island-dark p-custom py-section" data-nav-theme="dark" ref={root} style={{ paddingTop: 0 }}>
         <div className="video-frame">
           {/* demo1.mp4 只存在于 origin（ORIGIN_ONLY），本地预览时 404 属预期 */}
-          <video ref={video} controls preload="metadata" playsInline poster="/og-cover.jpg" onPlay={() => { setStarted(true); once('demo-play'); }} onEnded={() => once('demo-complete')}>
+          <video ref={video} controls preload="metadata" playsInline poster="/og-cover.jpg" onPlay={() => { setStarted(true); setEnded(false); once('demo-play'); }} onEnded={() => { setEnded(true); once('demo-complete'); }}>
             <source src="/demo1.mp4" type="video/mp4" />
             {t('您的浏览器不支持视频播放，请使用 Chrome 或 Safari。', 'Your browser does not support video playback. Please use Chrome or Safari.')}
           </video>
@@ -70,6 +72,17 @@ export default function Demo() {
             <button type="button" className="video-frame__play" onClick={() => video.current?.play()}>
               <span className="blink t-ui hl"><span aria-hidden="true">[</span><span>{t('播放演示', 'Play the demo')}</span><Arrow /><span aria-hidden="true">]</span></span>
             </button>
+          )}
+          {/* 看完的人意向最强（完播 6/7）：播完给两个出口，重播即收起。 */}
+          {ended && (
+            <div className="video-frame__end">
+              <p className="t-h3">{t('想在开售时第一个拿到？', 'Want one the day sales open?')}</p>
+              <div className="product__actions">
+                <BracketLink href={href(lang, 'buy')} highlight data-umami-event="cta-waitlist" data-umami-event-at="demo">{t('加入候补名单', 'Join the waitlist')}</BracketLink>
+                <BracketLink href={TESTFLIGHT} external data-umami-event="cta-testflight" data-umami-event-at="demo">{t('先下载 App 试试', 'Try the app first')}</BracketLink>
+                <button type="button" className="blink t-ui video-frame__replay" onClick={() => video.current?.play()}>{t('重新播放', 'Replay')}</button>
+              </div>
+            </div>
           )}
         </div>
         <dl className="specs" style={{ marginTop: 'var(--gap-y-md)' }}>
@@ -91,6 +104,7 @@ export default function Demo() {
         <div className="product__actions" style={{ marginTop: 'var(--gap-y-md)' }}>
           <BracketLink href={href(lang, 'index')}>{t('了解产品', 'Explore the product')}</BracketLink>
           <BracketLink href={href(lang, 'buy')} data-umami-event="cta-waitlist" data-umami-event-at="demo">{t('加入候补名单', 'Join the waitlist')}</BracketLink>
+          <BracketLink href={TESTFLIGHT} external data-umami-event="cta-testflight" data-umami-event-at="demo">{t('TestFlight 体验 App', 'Get the app on TestFlight')}</BracketLink>
         </div>
       </Section>
       <div className="gasket" aria-hidden="true" />

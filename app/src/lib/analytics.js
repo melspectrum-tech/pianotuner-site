@@ -3,13 +3,14 @@ import { useEffect } from 'react';
 // 自托管 Umami 的薄封装：脚本未加载（未配置 / 被拦截 / SSR）时静默跳过，绝不抛错。
 //
 // 事件约定（2026-10-01，分级见 vault 00-公司/官网/SEO-关键词与基线-2026-10.md）：
-//   T1 转化   waitlist-signup {source, role, lang} · cta-testflight {at} · contact-email
+//   T1 转化   waitlist-signup {source, role, lang} · cta-testflight {at} · contact-email {at, type?}
+//            （type 只在联系页留言表单提交时带，取值是表单的 TYPES key）
 //   T2 高意向 cta-waitlist {at} · cta-pro {at} · demo-complete
 //   T3 参与度 demo-play · scroll-50 · scroll-90 · guide-product-click {guide, target}
 // 同一个用户动作只能有一种发射方式：静态链接 / 按钮用 data-umami-event(-<key>) 属性，
 // 程序事件（表单成功、视频、滚动、指南正文点击）用 track()。同一元素禁止两种都用。
 // 属性值只用下面的枚举，别随手写新值（nav / navbar / header 会把数据切碎）。
-export const AT = ['hero', 'index', 'nav', 'footer', 'pro', 'about', 'demo', 'buy', 'guide', '404'];
+export const AT = ['hero', 'index', 'nav', 'footer', 'pro', 'about', 'demo', 'buy', 'guide', 'support', 'contact', '404'];
 export const TARGET = ['product', 'pro', 'demo'];
 
 export function track(event, data) {

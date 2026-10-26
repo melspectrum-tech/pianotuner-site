@@ -205,6 +205,7 @@
    ============================================================ */
 @media (prefers-reduced-motion: no-preference) {
   .menu[open] { animation: pt-fade var(--dur-s) var(--ease-out) both; }
+  .tfqr[open], .tfqr[open]::backdrop { animation: pt-fade var(--dur-s) var(--ease-out) both; }
   .menu[open]::backdrop { animation: pt-fade var(--dur-s) var(--ease-out) both; }
   .menu[open] .menu__inner > * {
     animation: pt-drop var(--dur-m) var(--ease-out) both;

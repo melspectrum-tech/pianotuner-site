@@ -14,7 +14,7 @@ import { graph, breadcrumb, ORG_ID } from '../schema';
 
 export const meta = {
   published: '2026-09-05',
-  updated: '2026-09-27',
+  updated: '2026-10-26',
   navTheme: 'dark',
   ogType: 'product',
   zh: { title: 'Piano Tuner 专业版 | 旗舰级数字化调律解决方案', desc: 'Piano Tuner 专业版：端侧拉伸优化、专业频率分析、多琴档案与 PDF 钢琴健康报告，为职业调律师与音乐机构打造。Pro 年度订阅。' },
@@ -110,7 +110,10 @@ export default function Pro() {
         eyebrow={t('PROFESSIONAL · 专业版', 'PROFESSIONAL')}
         l1={t('为专业调律师', 'A digital soul')}
         l2={t('赋予数字灵魂', 'for professional tuners')}
-        sub={t('高精度声学、Turbo 电机、云端业务管理，一台调音器全包。', 'High-res acoustics, Turbo motor, cloud management — one tuner.')}
+        sub={<>
+          {t('高精度声学、Turbo 电机、云端业务管理，一台调音器全包。', 'High-res acoustics, Turbo motor, cloud management — one tuner.')}
+          <span className="hero__status t-ui">{t('Pro 年度订阅 ¥499/年 · 基础调音无需订阅 · 当前销售暂停', 'Pro annual subscription ¥499/yr · Basic tuning needs no subscription · Sales paused')}</span>
+        </>}
         actions={<>
           <BracketLink href={href(lang, 'buy')} highlight data-umami-event="cta-waitlist" data-umami-event-at="pro">{t('加入候补名单', 'Join the waitlist')}</BracketLink>
           <BracketLink href="#features">{t('六大独占特性', 'Six Pro features')}</BracketLink>
@@ -148,7 +151,7 @@ export default function Pro() {
             {t('专业版以年度订阅方式授权（¥499/年）；基础调音无需任何订阅即可使用。当前销售暂停，加入候补名单，开售第一时间通知你。', 'Pro is licensed as an annual subscription (¥499/yr); basic tuning needs no subscription at all. Sales are currently paused — join the waitlist and we will notify you the moment they reopen.')}
           </p>
           <p className="t-body-sm" style={{ gridColumn: '1 / -1', maxWidth: '56ch' }}>
-            {t('购买前请知悉：本产品为 Beta 测试版，仅支持换货，不支持退货退款。有任何意见或问题，请发送至 ', 'Before purchasing: this product is Beta — exchange only, no refund. Feedback: ')}
+            {t('有任何意见或问题，请发送至 ', 'Feedback or questions: ')}
             <a className="literal" href={`mailto:${EMAIL_REPORT}`}>{EMAIL_REPORT}</a>
           </p>
         </div>

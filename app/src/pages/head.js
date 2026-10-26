@@ -81,7 +81,8 @@ export function renderHead(pageId, lang) {
     `<script>${LANG_SCRIPT}</script>`,
     `<script>${VT_SCRIPT}</script>`,
     // 自托管 Umami，同源（CSP 'self' 即可），无 cookie；data-domains 让本地 preview 不上报。
-    UMAMI_WEBSITE_ID ? `<script defer src="/u.js" data-website-id="${UMAMI_WEBSITE_ID}" data-domains="www.pianotuner.top,pianotuner.top"></script>` : '',
+    // data-exclude-hash：/buy.html#waitlist、/#faq 不再被记成单独的页面（2026-10-26）。
+    UMAMI_WEBSITE_ID ? `<script defer src="/u.js" data-website-id="${UMAMI_WEBSITE_ID}" data-domains="www.pianotuner.top,pianotuner.top" data-exclude-hash="true"></script>` : '',
   ];
   return lines.filter(Boolean).join('\n');
 }

@@ -9,6 +9,7 @@ import { Button, Eyebrow, SectionHead } from '../../components/ui';
 import { useTextReveal, useReveal, useStackDeck } from '../../lib/motion/hooks';
 import { EMAIL_PRIMARY, EMAIL_BUSINESS } from '../../data/site';
 import { graph, breadcrumb, organization } from '../schema';
+import { track } from '../../lib/analytics';
 
 export const meta = {
   published: '2026-09-05',
@@ -50,6 +51,8 @@ function MessageForm() {
     const subject = encodeURIComponent(`[Piano Tuner] ${label} — ${name}`);
     const body = encodeURIComponent(`${t('姓名', 'Name')}: ${name}\n${t('邮箱', 'Email')}: ${email}\n${t('类型', 'Type')}: ${label}\n\n${msg}`);
     setErr('');
+    // 程序事件（表单校验通过才算），type 是上面 TYPES 的 key —— 用来区分留言表单和直接点邮箱。
+    track('contact-email', { at: 'contact', type: row[0] });
     window.location.href = `mailto:${row[3]}?subject=${subject}&body=${body}`;
   };
   return (
@@ -92,7 +95,7 @@ export default function Contact() {
       <section className="island-light p-custom py-section" data-nav-theme="light" ref={root}>
         <div className="contact-primary">
           <span className="t-ui" style={{ color: 'var(--color-ash)' }}>{t('首选联系方式 · 邮件', 'PREFERRED · EMAIL')}</span>
-          <a className="cta__mail literal" href={`mailto:${EMAIL_PRIMARY}`} data-umami-event="contact-email">{EMAIL_PRIMARY}</a>
+          <a className="cta__mail literal" href={`mailto:${EMAIL_PRIMARY}`} data-umami-event="contact-email" data-umami-event-at="contact">{EMAIL_PRIMARY}</a>
           <p className="t-body-sm" style={{ color: 'var(--color-charcoal)', margin: 0 }}>{t('咨询、合作都可以直接写信，我们会在 1–2 个工作日内回复。', 'Questions or partnerships — just email us. We reply within 1–2 business days.')}</p>
         </div>
         <div className="contact-grid" ref={deck}>

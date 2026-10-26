@@ -6,13 +6,13 @@ import Section from '../../components/Section';
 import Scramble from '../../components/Scramble';
 import PageHero from '../../components/PageHero';
 import PrecisionNote from '../../components/PrecisionNote';
-import { BracketLink, Fn, SectionHead } from '../../components/ui';
-import { useTextReveal, useReveal, useStackDeck, useFaqAccordion } from '../../lib/motion/hooks';
-import { EMAIL_REPORT } from '../../data/site';
+import { BracketLink, Button, Fn, SectionHead } from '../../components/ui';
+import { useTextReveal, useReveal, useFaqAccordion } from '../../lib/motion/hooks';
+import { EMAIL_REPORT, TESTFLIGHT } from '../../data/site';
 
 export const meta = {
   published: '2026-09-05',
-  updated: '2026-09-05',
+  updated: '2026-10-26',
   navTheme: 'dark',
   zh: { title: 'Piano Tuner | 帮助与支持中心', desc: 'Piano Tuner 帮助与支持：快速上手指南、常见问题、固件更新、供电、适配机型与技术支持。' },
   en: { title: 'Piano Tuner | Support Center', desc: 'Piano Tuner support: quick-start guide, FAQs, firmware updates, power, compatibility and technical support.' },
@@ -22,12 +22,10 @@ export const meta = {
 export default function Support() {
   const { t, lang } = useT();
   const root = useRef(null);
-  const deck = useRef(null);
   const faqRef = useRef(null);
   useTextReveal(root);
   useFaqAccordion(faqRef);
   useReveal(root);
-  useStackDeck(deck);
   const steps = [
     { num: '01 · ASSEMBLY', title: t('硬件组装', 'Assembly'), desc: t('将调音套筒安装至设备前端输出轴，并将人体工程学侧手柄旋入机身中部的安装接口。', 'Attach the tuning socket and screw in the ergonomic side handle.') },
     { num: '02 · CONNECT', title: t('下载并连接 App', 'Connect the app'), desc: t('扫描产品包装内的二维码下载官方 App。开启手机蓝牙，并在 App 内选择您的设备进行配对。', 'Scan the QR code to download the app. Enable Bluetooth and pair your device.') },
@@ -47,25 +45,36 @@ export default function Support() {
     [t('对钢琴年份有限制吗？', "Are there limits on the piano's age?"), t('建议钢琴出厂 5 年以上。对于新琴（< 1 年），弦轴张力尚在稳定期，调律师通常建议等待张力稳定后再进行精细调音。Piano Tuner 的微调策略也会自动适配新琴特性。', "We recommend pianos at least 5 years old. For new pianos (< 1 year), pin tension is still settling, and tuners usually suggest waiting before fine tuning. Piano Tuner's touch-up strategy also auto-adapts to new-piano characteristics.")],
     [t('在信号差的地方能正常使用吗？', 'Can I use it where signal is poor?'), t('调音核心完全在本地（iOS 端）运行，不依赖网络——包括个性化拉伸曲线的拟合。云端只用于多琴档案同步、健康报告与固件更新，信号恢复后自动同步，且都是可选的。', 'The tuning core runs entirely on-device on iOS, with no network dependency — including fitting your personalized stretch curve. The cloud is used only for multi-piano archive sync, health reports, and firmware updates; it syncs when signal returns, and all of it is optional.')],
   ];
-  const videos = [t('开箱与首次组装', 'Unboxing & assembly'), t('App 全功能详解', 'Full app walkthrough'), t('人体工程学手柄的正确用法', 'Using the ergonomic handle')];
   return (
     <Shell page="support" navTheme="dark">
       <PageHero
         eyebrow={t('SUPPORT · 帮助与支持', 'SUPPORT')}
         l1={t('帮助与支持中心', 'Support center')}
         sub={t('使用指南、常见问题与技术支持。', 'Guides, FAQs, and technical support.')}
-        actions={<BracketLink href={`mailto:${EMAIL_REPORT}`} highlight>{t('写邮件给支持团队', 'Email support')}</BracketLink>}
+        actions={<BracketLink href={`mailto:${EMAIL_REPORT}`} highlight data-umami-event="contact-email" data-umami-event-at="support">{t('写邮件给支持团队', 'Email support')}</BracketLink>}
       />
       <section className="island-light p-custom py-section" data-nav-theme="light" ref={root}>
-        <SectionHead eyebrow={t('QUICK START · 快速上手', 'QUICK START')} title={t('快速上手指南', 'Quick-start guide')} />
-        <div className="steps">
-          {steps.map((s) => (
-            <article className="step anim-up" key={s.num}>
-              <Scramble className="card__num t-ui">{s.num}</Scramble>
-              <h3 className="t-h3">{s.title}</h3>
-              <p className="card__desc t-body-sm">{s.desc}</p>
-            </article>
-          ))}
+        {/* 硬件还没人拿到，来这页的多半是查 App 的：先给能用的东西（2026-10-26）。 */}
+        <SectionHead
+          eyebrow={t('NO HARDWARE YET · 先用 App', 'NO HARDWARE YET')}
+          title={t('还没有硬件？先用 App', 'No hardware yet? Start with the app')}
+          sub={t('硬件尚未开售，App 已在 TestFlight 开放：现在就能把 iPhone 当作专业调音表与实时频谱分析仪。下面的上手指南与常见问题针对硬件到手后的使用。', "The hardware isn't on sale yet, but the app is live on TestFlight — use your iPhone as a pro tuning meter and real-time spectrum analyzer today. The quick-start guide and FAQ below cover the hardware once it ships.")}
+        />
+        <div className="product__actions" style={{ marginTop: 32 }}>
+          <Button href={TESTFLIGHT} external data-umami-event="cta-testflight" data-umami-event-at="support">{t('TestFlight 体验 App', 'Get the app on TestFlight')}</Button>
+          <BracketLink href={href(lang, 'demo')}>{t('看实测演示', 'Watch the demo')}</BracketLink>
+        </div>
+        <div style={{ marginTop: 'var(--gap-y-lg)' }}>
+          <SectionHead eyebrow={t('QUICK START · 快速上手', 'QUICK START')} title={t('快速上手指南', 'Quick-start guide')} />
+          <div className="steps">
+            {steps.map((s) => (
+              <article className="step anim-up" key={s.num}>
+                <Scramble className="card__num t-ui">{s.num}</Scramble>
+                <h3 className="t-h3">{s.title}</h3>
+                <p className="card__desc t-body-sm">{s.desc}</p>
+              </article>
+            ))}
+          </div>
         </div>
         <div style={{ marginTop: 'var(--gap-y-lg)' }}>
           <SectionHead eyebrow={t('FAQ · 常见问题', 'FAQ')} title={t('常见问题解答', 'Frequently asked questions')} />
@@ -85,17 +94,9 @@ export default function Support() {
       </section>
       <div className="gasket" aria-hidden="true" />
       <Section island="dark">
-        <SectionHead eyebrow={t('VIDEO · 视频教程库', 'VIDEO TUTORIALS')} title={t('视频教程库', 'Video tutorials')} sub={t('制作中，敬请期待。', 'In production — stay tuned.')} />
-        <div className="stack-deck" ref={deck}>
-          {videos.map((v, i) => (
-            <article className="card card--soon" key={v} data-stack-card>
-              <Scramble className="card__num t-ui">{String(i + 1).padStart(2, '0')} · {t('即将上线', 'COMING SOON')}</Scramble>
-              <div className="mono-block" aria-hidden="true">{String(i + 1).padStart(2, '0')}</div>
-              <h3 className="t-h3">{v}</h3>
-            </article>
-          ))}
-        </div>
+        <SectionHead eyebrow={t('VIDEO · 实测演示', 'VIDEO')} title={t('看它实际怎么调', 'See it tune for real')} sub={t('V1.0 原型从听音到拧弦，一镜到底。分步视频教程会随硬件开售一起上线。', 'The V1.0 prototype, from listening to turning, in one take. Step-by-step tutorials will ship with the hardware.')} />
         <div className="product__actions" style={{ marginTop: 'var(--gap-y-md)' }}>
+          <BracketLink href={href(lang, 'demo')} highlight>{t('观看实测演示', 'Watch the demo')}</BracketLink>
           <BracketLink href={href(lang, 'index', 'faq')}>{t('产品页常见问题', 'Product FAQ')}</BracketLink>
           <BracketLink href={href(lang, 'contact')}>{t('联系我们', 'Contact us')}</BracketLink>
         </div>

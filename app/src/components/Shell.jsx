@@ -4,6 +4,7 @@ import Nav from './Nav';
 import Footer from './Footer';
 import Progress from './Progress';
 import LangHint from './LangHint';
+import TestFlightQR from './TestFlightQR';
 
 /** 每页共用的壳：skip link + 固定导航 + <main> + 页脚 + 底部进度条。 */
 export default function Shell({ page, navTheme = 'dark', children }) {
@@ -18,6 +19,7 @@ export default function Shell({ page, navTheme = 'dark', children }) {
       <main id="main">{children}</main>
       <Footer page={page} />
       <Progress theme={bottom} />
+      <TestFlightQR />
     </>
   );
 }
