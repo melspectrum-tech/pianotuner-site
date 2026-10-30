@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// 事务式部署到 origin（root@192.255.139.83:/var/www/html-pianotuner）。
+// 事务式部署到 origin（root@108.186.222.233:/var/www/html-pianotuner；2026-10-30 起，原 Web-LA 192.255.139.83 只做 BGP/备份）。
 // 默认 dry-run，--apply 才执行。只走 DEPLOY 显式清单，全链无 rsync。
 //
 //  0. 预检：工作树干净、verify:root 通过、ssh 可达
@@ -17,7 +17,7 @@ import { DEPLOY, ORIGIN_ONLY, PAGES, REDIRECTS, LANGS, SITE, assertNode24 } from
 import { verifyBuild } from './verify-build.mjs';
 
 assertNode24();
-const HOST = 'root@192.255.139.83';
+const HOST = 'root@108.186.222.233';
 const ROOT = '/var/www/html-pianotuner';
 const RELEASES = '/var/www/releases';
 const LEGACY = `${RELEASES}/pianotuner-legacy`;
