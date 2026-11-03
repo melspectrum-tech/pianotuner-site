@@ -42,11 +42,13 @@
     .login-card button { width: 100%; margin-top: 24px; }
     @media (max-width: 700px) { .container { padding: 20px 12px; } .header { padding: 12px; } .stats { gap: 8px; } .card { padding: 14px; } .filters { grid-template-columns: 1fr 1fr; } .stat-value { font-size: 26px; } }
   </style>
+  <link rel="stylesheet" href="admin.css?v=20261103-1">
 </head>
-<body>
+<body class="admin-waitlist">
   <div id="loginView">
     <form class="card login-card" id="loginForm">
-      <h1>🎹 Piano Tuner</h1>
+      <div class="login-logo"><svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true" focusable="false"><g fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M16 12.75 Q17.955 6.425 16 1.25M18.541 13.974 Q24.705 11.559 27.532 6.804M19.169 16.723 Q24.9 20.037 30.38 19.282M17.41 18.928 Q18.393 25.475 22.4 29.289M14.59 18.928 Q10.084 23.779 9.6 29.289M12.831 16.723 Q6.23 16.225 1.62 19.282M13.459 13.974 Q9.733 8.502 4.468 6.804"/></g></svg></div>
+      <h1>PIANO TUNER</h1>
       <p class="muted">使用 v0id@melspectrum.com 的邮箱验证与 Passkey 登录，无需后台密码。</p>
       <p id="loginError" class="error" role="alert" hidden></p>
       <button class="primary" id="loginBtn">重新验证身份</button>
@@ -54,8 +56,8 @@
   </div>
   <div id="adminView" hidden>
     <header class="header">
-      <strong>🎹 Piano Tuner</strong>
-      <nav aria-label="管理后台">
+      <div class="header-brand"><svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true" focusable="false"><g fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M16 12.75 Q17.955 6.425 16 1.25M18.541 13.974 Q24.705 11.559 27.532 6.804M19.169 16.723 Q24.9 20.037 30.38 19.282M17.41 18.928 Q18.393 25.475 22.4 29.289M14.59 18.928 Q10.084 23.779 9.6 29.289M12.831 16.723 Q6.23 16.225 1.62 19.282M13.459 13.974 Q9.733 8.502 4.468 6.804"/></g></svg><span class="brand-name">PIANO TUNER</span><span class="brand-section">管理后台</span></div>
+      <nav class="header-nav" aria-label="管理后台">
         <a class="nav-link" href="orders.html">订单管理</a>
         <a class="nav-link" href="cdk.html">CDK 管理</a>
         <a class="nav-link active" href="waitlist.html" aria-current="page">Waitlist</a>
@@ -63,8 +65,7 @@
       <div class="actions"><span class="muted" id="adminUser"></span><button id="logoutBtn">退出登录</button></div>
     </header>
     <main class="container">
-      <h1>Waitlist 预购通知名单</h1>
-      <p class="muted">按报名时间从新到旧排列。疑似测试记录保留在总数中，并单独标注。</p>
+      <div class="page-heading"><p class="eyebrow">03 / WAITLIST</p><h1>预购通知名单</h1><p class="page-description">按报名时间从新到旧排列。疑似测试记录保留在总数中，并单独标注。</p></div>
       <div class="stats">
         <div class="card"><span class="muted">报名总数</span><strong class="stat-value" id="statTotal">–</strong></div>
         <div class="card"><span class="muted">近 7 天新增</span><strong class="stat-value" id="statRecent">–</strong></div>

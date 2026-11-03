@@ -260,8 +260,9 @@
       th, td { padding: 10px 12px; }
     }
   </style>
+  <link rel="stylesheet" href="admin.css?v=20261103-1">
 </head>
-<body>
+<body class="admin-cdk">
 
 <!-- Loading Overlay -->
 <div class="loading-overlay" id="loadingOverlay"><div class="spinner"></div></div>
@@ -272,7 +273,7 @@
 <!-- ═══════════════════ LOGIN ═══════════════════ -->
 <div class="login-wrap" id="loginView">
   <div class="login-card">
-    <div class="login-logo">🎹</div>
+    <div class="login-logo"><svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true" focusable="false"><g fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M16 12.75 Q17.955 6.425 16 1.25M18.541 13.974 Q24.705 11.559 27.532 6.804M19.169 16.723 Q24.9 20.037 30.38 19.282M17.41 18.928 Q18.393 25.475 22.4 29.289M14.59 18.928 Q10.084 23.779 9.6 29.289M12.831 16.723 Q6.23 16.225 1.62 19.282M13.459 13.974 Q9.733 8.502 4.468 6.804"/></g></svg></div>
     <div class="login-title">Piano Tuner</div>
     <div class="login-sub">管理后台</div>
     <div class="login-error" id="loginError"></div>
@@ -287,12 +288,12 @@
 <div id="adminView" style="display:none">
 
   <div class="header">
-    <div class="header-brand">🎹 Piano Tuner <span>管理后台</span></div>
-    <div class="header-nav">
+    <div class="header-brand"><svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true" focusable="false"><g fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M16 12.75 Q17.955 6.425 16 1.25M18.541 13.974 Q24.705 11.559 27.532 6.804M19.169 16.723 Q24.9 20.037 30.38 19.282M17.41 18.928 Q18.393 25.475 22.4 29.289M14.59 18.928 Q10.084 23.779 9.6 29.289M12.831 16.723 Q6.23 16.225 1.62 19.282M13.459 13.974 Q9.733 8.502 4.468 6.804"/></g></svg><span class="brand-name">PIANO TUNER</span><span class="brand-section">管理后台</span></div>
+    <nav class="header-nav" aria-label="管理后台">
       <a class="nav-link" href="orders.html">订单管理</a>
-      <a class="nav-link active" href="cdk.html">CDK 管理</a>
+      <a class="nav-link active" href="cdk.html" aria-current="page">CDK 管理</a>
       <a class="nav-link" href="waitlist.html">Waitlist</a>
-    </div>
+    </nav>
     <div class="header-right">
       <span style="font-size:13px;color:var(--text2);" id="adminUser"></span>
       <button class="btn btn-ghost btn-sm" onclick="handleLogout()">退出登录</button>
@@ -300,6 +301,7 @@
   </div>
 
   <div class="container">
+    <div class="page-heading"><p class="eyebrow">02 / LICENSES</p><h1>CDK 管理</h1><p class="page-description">查看授权状态，管理激活码的生成与撤销。</p></div>
 
     <!-- Stats -->
     <div class="stats-grid" id="statsGrid">
