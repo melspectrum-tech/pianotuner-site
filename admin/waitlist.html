@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Waitlist 管理 - Piano Tuner</title>
+  <style>
+    :root { --bg: #fff; --bg2: #f7f8fa; --border: #e4e6eb; --text: #1c1e21; --text2: #65676b; --primary: #0066cc; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, sans-serif; background: var(--bg2); color: var(--text); }
+    [hidden] { display: none !important; }
+    button, input, select { font: inherit; }
+    button, .nav-link { cursor: pointer; border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; background: var(--bg); color: var(--text); text-decoration: none; font-size: 14px; }
+    button:disabled { opacity: .6; cursor: wait; }
+    button:hover, .nav-link:hover { background: var(--bg2); }
+    button.primary, .nav-link.active { color: #fff; background: var(--primary); border-color: var(--primary); }
+    input, select { width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 8px; background: var(--bg); color: var(--text); }
+    :focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+    label { display: block; font-size: 13px; color: var(--text2); }
+    label input, label select { margin-top: 6px; }
+    .header { background: var(--bg); border-bottom: 1px solid var(--border); padding: 14px 24px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+    nav, .actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .container { max-width: 1100px; margin: auto; padding: 28px 24px; }
+    h1 { font-size: 24px; margin-bottom: 8px; }
+    .muted { color: var(--text2); font-size: 13px; line-height: 1.7; }
+    .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin: 24px 0; }
+    .card { background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 20px; }
+    .stat-value { display: block; font-size: 32px; font-weight: 700; margin-top: 8px; }
+    .filters { display: grid; grid-template-columns: 2fr repeat(3, 1fr); gap: 12px; margin-bottom: 16px; }
+    .results { display: flex; gap: 12px; align-items: center; justify-content: space-between; margin-bottom: 12px; flex-wrap: wrap; }
+    .table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 10px; background: var(--bg); }
+    table { width: 100%; border-collapse: collapse; text-align: left; font-size: 14px; }
+    th, td { padding: 14px 16px; border-bottom: 1px solid var(--border); white-space: nowrap; }
+    th { background: var(--bg2); color: var(--text2); font-size: 12px; }
+    tbody tr:last-child td { border-bottom: 0; }
+    .badge { display: inline-block; font-size: 12px; color: #854d0e; background: #fef9c3; border-radius: 4px; padding: 2px 6px; margin-left: 6px; }
+    .error { color: #b91c1c; background: #fee2e2; padding: 12px; border-radius: 8px; margin-bottom: 16px; }
+    #loginView { min-height: 100vh; display: grid; place-items: center; padding: 24px; }
+    .login-card { width: 100%; max-width: 400px; padding: 36px; }
+    .login-card label { margin-top: 16px; }
+    .login-card button { width: 100%; margin-top: 24px; }
+    @media (max-width: 700px) { .container { padding: 20px 12px; } .header { padding: 12px; } .stats { gap: 8px; } .card { padding: 14px; } .filters { grid-template-columns: 1fr 1fr; } .stat-value { font-size: 26px; } }
+  </style>
+</head>
+<body>
+  <div id="loginView">
+    <form class="card login-card" id="loginForm">
+      <h1>🎹 Piano Tuner</h1>
+      <p class="muted">登录管理后台，查看 Waitlist</p>
+      <p id="loginError" class="error" role="alert" hidden></p>
+      <label>管理员账号<input id="username" autocomplete="username" required></label>
+      <label>密码<input id="password" type="password" autocomplete="current-password" required></label>
+      <button class="primary" id="loginBtn">登录</button>
+    </form>
+  </div>
+  <div id="adminView" hidden>
+    <header class="header">
+      <strong>🎹 Piano Tuner</strong>
+      <nav aria-label="管理后台">
+        <a class="nav-link" href="orders.html">订单管理</a>
+        <a class="nav-link" href="cdk.html">CDK 管理</a>
+        <a class="nav-link active" href="waitlist.html" aria-current="page">Waitlist</a>
+      </nav>
+      <div class="actions"><span class="muted" id="adminUser"></span><button id="logoutBtn">退出登录</button></div>
+    </header>
+    <main class="container">
+      <h1>Waitlist 预购通知名单</h1>
+      <p class="muted">按报名时间从新到旧排列。疑似测试记录保留在总数中，并单独标注。</p>
+      <div class="stats">
+        <div class="card"><span class="muted">报名总数</span><strong class="stat-value" id="statTotal">–</strong></div>
+        <div class="card"><span class="muted">近 7 天新增</span><strong class="stat-value" id="statRecent">–</strong></div>
+        <div class="card"><span class="muted">疑似测试记录</span><strong class="stat-value" id="statTest">–</strong></div>
+      </div>
+      <div class="filters">
+        <label>邮箱搜索<input id="search" type="search" placeholder="输入完整邮箱或部分内容"></label>
+        <label>语言<select id="lang"><option value="">全部语言</option></select></label>
+        <label>来源<select id="source"><option value="">全部来源</option></select></label>
+        <label>身份<select id="role"><option value="">全部身份</option></select></label>
+      </div>
+      <div class="results">
+        <p class="muted" id="resultCount" role="status" aria-live="polite">等待加载</p>
+        <div class="actions"><button id="resetBtn">清除筛选</button><button id="refreshBtn">刷新数据</button></div>
+      </div>
+      <p id="dataError" class="error" role="alert" hidden></p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th scope="col">邮箱</th><th scope="col">报名时间（原始记录）</th><th scope="col">语言</th><th scope="col">来源</th><th scope="col">身份</th></tr></thead>
+          <tbody id="tableBody"></tbody>
+        </table>
+      </div>
+      <p class="muted" id="updatedAt"></p>
+    </main>
+  </div>
+  <script>
+    const $ = id => document.getElementById(id);
+    const labels = { lang: { en: '英文', zh: '中文' }, role: { tuner: '调音师' } };
+    let token = localStorage.getItem('admin_token');
+    let subscribers = [];
+    const valueOf = (row, key) => String(row[key] || '');
+    const isTest = row => valueOf(row, 'source') === 'deploy-verify';
+    // 现生产服务器按 UTC 保存时间；近 7 天统计按 UTC 解析，历史记录保留原样。
+    const subscribedTime = row => Date.parse(valueOf(row, 'subscribed_at').replace(' ', 'T') + 'Z');
+
+    function logout() {
+      localStorage.removeItem('admin_token');
+      localStorage.removeItem('admin_user');
+      token = null;
+      subscribers = [];
+      $('tableBody').replaceChildren();
+      $('password').value = '';
+      $('adminView').hidden = true;
+      $('loginView').hidden = false;
+    }
+
+    $('loginForm').addEventListener('submit', async event => {
+      event.preventDefault();
+      $('loginError').hidden = true;
+      $('loginBtn').disabled = true;
+      try {
+        const username = $('username').value.trim();
+        const response = await fetch('/api/admin/login', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password: $('password').value })
+        });
+        const data = await response.json();
+        if (!response.ok || data.status !== 'ok' || !data.token) throw new Error(data.message || '登录失败，请检查账号和密码');
+        token = data.token;
+        localStorage.setItem('admin_token', token);
+        localStorage.setItem('admin_user', username);
+        $('password').value = '';
+        await loadSubscribers();
+      } catch (error) {
+        $('loginError').textContent = error.message;
+        $('loginError').hidden = false;
+      } finally { $('loginBtn').disabled = false; }
+    });
+
+    async function loadSubscribers() {
+      $('loginView').hidden = true;
+      $('adminView').hidden = false;
+      $('adminUser').textContent = localStorage.getItem('admin_user') || 'admin';
+      $('dataError').hidden = true;
+      $('refreshBtn').disabled = true;
+      $('resultCount').textContent = '加载中…';
+      try {
+        const response = await fetch('/api/pianotuner/subscribers', { headers: { Authorization: `Bearer ${token}` }, cache: 'no-store' });
+        if (response.status === 401) {
+          logout();
+          $('loginError').textContent = '登录已过期，请重新登录';
+          $('loginError').hidden = false;
+          return;
+        }
+        const data = await response.json();
+        if (!response.ok || data.status !== 'ok' || !Array.isArray(data.subscribers)) throw new Error('名单加载失败，请稍后刷新');
+        subscribers = data.subscribers.sort((a, b) => valueOf(b, 'subscribed_at').localeCompare(valueOf(a, 'subscribed_at')));
+        const now = Date.now();
+        $('statTotal').textContent = subscribers.length;
+        $('statRecent').textContent = subscribers.filter(row => subscribedTime(row) >= now - 7 * 86400000 && subscribedTime(row) <= now).length;
+        $('statTest').textContent = subscribers.filter(isTest).length;
+        for (const key of ['lang', 'source', 'role']) {
+          const select = $(key), previous = select.value;
+          while (select.options.length > 1) select.remove(1);
+          for (const value of [...new Set(subscribers.map(row => valueOf(row, key)))].sort()) {
+            select.add(new Option(labels[key]?.[value] || value || '未填写', value || '__missing__'));
+          }
+          select.value = [...select.options].some(option => option.value === previous) ? previous : '';
+        }
+        $('updatedAt').textContent = `数据刷新于 ${new Date().toLocaleString('zh-CN')}（本地时间）；统计不随筛选改变。`;
+        renderTable();
+      } catch (error) {
+        $('dataError').textContent = `${error.message}。如已有数据，仍显示上次成功加载的结果。`;
+        $('dataError').hidden = false;
+        renderTable();
+      } finally { $('refreshBtn').disabled = false; }
+    }
+
+    function renderTable() {
+      const query = $('search').value.trim().toLowerCase();
+      const rows = subscribers.filter(row => valueOf(row, 'email').toLowerCase().includes(query) && ['lang', 'source', 'role'].every(key => {
+        const filter = $(key).value;
+        return !filter || (filter === '__missing__' ? !valueOf(row, key) : valueOf(row, key) === filter);
+      }));
+      $('resultCount').textContent = `显示 ${rows.length} / ${subscribers.length} 条`;
+      $('tableBody').replaceChildren();
+      for (const row of rows) {
+        const tr = document.createElement('tr');
+        for (const key of ['email', 'subscribed_at', 'lang', 'source', 'role']) {
+          const td = document.createElement('td'), value = valueOf(row, key);
+          td.textContent = labels[key]?.[value] || value || '未填写';
+          if (key === 'source' && isTest(row)) {
+            const badge = document.createElement('span');
+            badge.className = 'badge'; badge.textContent = '疑似测试'; td.append(badge);
+          }
+          tr.append(td);
+        }
+        $('tableBody').append(tr);
+      }
+      if (!rows.length) {
+        const tr = document.createElement('tr'), td = document.createElement('td');
+        td.colSpan = 5; td.textContent = subscribers.length ? '没有符合条件的记录' : '暂无报名记录';
+        tr.append(td); $('tableBody').append(tr);
+      }
+    }
+
+    $('logoutBtn').addEventListener('click', logout);
+    $('refreshBtn').addEventListener('click', loadSubscribers);
+    $('search').addEventListener('input', renderTable);
+    for (const key of ['lang', 'source', 'role']) $(key).addEventListener('change', renderTable);
+    $('resetBtn').addEventListener('click', () => {
+      for (const key of ['search', 'lang', 'source', 'role']) $(key).value = '';
+      renderTable();
+    });
+    if (token) loadSubscribers();
+  </script>
+</body>
+</html>

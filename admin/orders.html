@@ -1,0 +1,939 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Piano Tuner 管理后台</title>
+  <style>
+    :root {
+      --bg: #ffffff;
+      --bg2: #f7f8fa;
+      --border: #e4e6eb;
+      --text: #1c1e21;
+      --text2: #65676b;
+      --primary: #0066cc;
+      --primary-hover: #0052a3;
+      --green: #16a34a;
+      --green-bg: #dcfce7;
+      --red: #dc2626;
+      --red-bg: #fee2e2;
+      --yellow-bg: #fef9c3;
+      --radius: 10px;
+      --shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, sans-serif;
+      background: var(--bg2);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* ── Header ── */
+    .header {
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      padding: 0 24px;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .header-brand {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: -0.3px;
+    }
+
+    .header-brand span {
+      font-weight: 400;
+      color: var(--text2);
+      font-size: 13px;
+      margin-left: 8px;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 16px;
+      border-radius: var(--radius);
+      font-size: 13px;
+      font-weight: 500;
+      border: none;
+      cursor: pointer;
+      transition: all 0.15s;
+      text-decoration: none;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-primary:hover { background: var(--primary-hover); }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--text2);
+      border: 1px solid var(--border);
+    }
+
+    .btn-ghost:hover { background: var(--bg2); }
+
+    .btn-sm {
+      padding: 4px 10px;
+      font-size: 12px;
+    }
+
+    .btn-green {
+      background: var(--green);
+      color: white;
+    }
+
+    .btn-green:hover { background: #15803d; }
+
+    .btn-red {
+      background: var(--red);
+      color: white;
+    }
+
+    .btn-red:hover { background: #b91c1c; }
+
+    /* ── Main container ── */
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 28px 24px;
+    }
+
+    /* ── Login ── */
+    .login-wrap {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--bg2);
+    }
+
+    .login-card {
+      background: var(--bg);
+      border-radius: 16px;
+      padding: 48px 40px;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      text-align: center;
+    }
+
+    .login-logo {
+      width: 56px;
+      height: 56px;
+      background: var(--primary);
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
+      color: white;
+      font-size: 28px;
+    }
+
+    .login-title {
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .login-sub {
+      font-size: 14px;
+      color: var(--text2);
+      margin-bottom: 32px;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+      text-align: left;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 13px;
+      font-weight: 500;
+      margin-bottom: 6px;
+      color: var(--text);
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.15s;
+      background: var(--bg);
+    }
+
+    .form-input:focus {
+      border-color: var(--primary);
+    }
+
+    .login-btn {
+      width: 100%;
+      margin-top: 8px;
+      padding: 11px;
+      font-size: 15px;
+    }
+
+    .login-error {
+      background: var(--red-bg);
+      color: var(--red);
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 13px;
+      margin-bottom: 16px;
+      display: none;
+      text-align: left;
+    }
+
+    /* ── Stats ── */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+
+    .stat-card {
+      background: var(--bg);
+      border-radius: var(--radius);
+      padding: 20px;
+      border: 1px solid var(--border);
+    }
+
+    .stat-label {
+      font-size: 12px;
+      color: var(--text2);
+      margin-bottom: 8px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .stat-value {
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .stat-value.green { color: var(--green); }
+    .stat-value.blue { color: var(--primary); }
+
+    /* ── Tabs ── */
+    .tabs {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 20px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 4px;
+      width: fit-content;
+    }
+
+    .tab {
+      padding: 8px 20px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      border: none;
+      background: transparent;
+      color: var(--text2);
+      transition: all 0.15s;
+    }
+
+    .tab.active {
+      background: var(--primary);
+      color: white;
+    }
+
+    .tab-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 18px;
+      height: 18px;
+      border-radius: 9px;
+      background: rgba(0,0,0,0.12);
+      font-size: 11px;
+      margin-left: 6px;
+      padding: 0 5px;
+    }
+
+    .tab.active .tab-badge {
+      background: rgba(255,255,255,0.25);
+    }
+
+    /* ── Table ── */
+    .table-wrap {
+      background: var(--bg);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      overflow: hidden;
+    }
+
+    .table-empty {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--text2);
+      font-size: 14px;
+    }
+
+    .table-empty-icon {
+      font-size: 40px;
+      margin-bottom: 12px;
+      opacity: 0.4;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    thead {
+      background: var(--bg2);
+      border-bottom: 1px solid var(--border);
+    }
+
+    th {
+      padding: 11px 16px;
+      text-align: left;
+      font-weight: 600;
+      color: var(--text2);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      white-space: nowrap;
+    }
+
+    td {
+      padding: 13px 16px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+    }
+
+    tr:last-child td { border-bottom: none; }
+
+    tr:hover td { background: #fafafa; }
+
+    .order-id {
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 12px;
+      color: var(--text2);
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .status-pending {
+      background: var(--yellow-bg);
+      color: #854d0e;
+    }
+
+    .status-confirmed {
+      background: var(--green-bg);
+      color: var(--green);
+    }
+
+    .price {
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    .actions {
+      display: flex;
+      gap: 6px;
+    }
+
+    .product-tag {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      color: var(--text2);
+    }
+
+    /* ── Confirm Modal ── */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.45);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      display: none;
+    }
+
+    .modal-overlay.show { display: flex; }
+
+    .modal {
+      background: var(--bg);
+      border-radius: 16px;
+      padding: 32px;
+      max-width: 400px;
+      width: 90%;
+      text-align: center;
+    }
+
+    .modal-icon {
+      font-size: 48px;
+      margin-bottom: 16px;
+    }
+
+    .modal-title {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .modal-body {
+      font-size: 14px;
+      color: var(--text2);
+      margin-bottom: 24px;
+      line-height: 1.6;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+    }
+
+    /* ── Toast ── */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: var(--text);
+      color: white;
+      padding: 12px 20px;
+      border-radius: 10px;
+      font-size: 14px;
+      z-index: 2000;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: all 0.25s;
+      pointer-events: none;
+      max-width: 340px;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .toast.success { background: var(--green); }
+    .toast.error { background: var(--red); }
+
+    /* ── Responsive ── */
+    @media (max-width: 640px) {
+      .container { padding: 16px 12px; }
+      .stats { grid-template-columns: 1fr; }
+      th, td { padding: 10px 12px; }
+      .hide-mobile { display: none; }
+      .header { padding: 0 12px; }
+    }
+
+    /* ── Loading ── */
+    .loading-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(255,255,255,0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 500;
+      display: none;
+    }
+
+    .loading-overlay.show { display: flex; }
+
+    .spinner {
+      width: 36px;
+      height: 36px;
+      border: 3px solid var(--border);
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    @media (max-width: 480px) {
+      .login-card { padding: 32px 24px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── Loading Overlay ── -->
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="spinner"></div>
+</div>
+
+<!-- ── Toast ── -->
+<div class="toast" id="toast"></div>
+
+<!-- ══════════════════════════════════════════
+     LOGIN VIEW
+══════════════════════════════════════════ -->
+<div class="login-wrap" id="loginView">
+  <div class="login-card">
+    <div class="login-logo">🎹</div>
+    <div class="login-title">Piano Tuner</div>
+    <div class="login-sub">管理后台</div>
+
+    <div class="login-error" id="loginError"></div>
+
+    <form id="loginForm" onsubmit="handleLogin(event)">
+      <div class="form-group">
+        <label class="form-label" for="username">管理员账号</label>
+        <input type="text" id="username" class="form-input" placeholder="admin" autocomplete="username" required>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="password">密码</label>
+        <input type="password" id="password" class="form-input" placeholder="••••••••" autocomplete="current-password" required>
+      </div>
+      <button type="submit" class="btn btn-primary login-btn" id="loginBtn">登录</button>
+    </form>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     ADMIN VIEW
+══════════════════════════════════════════ -->
+<div id="adminView" style="display:none">
+
+  <!-- Header -->
+  <div class="header">
+    <div class="header-brand">
+      🎹 Piano Tuner
+      <span>管理后台</span>
+    </div>
+    <div class="header-right">
+      <a class="btn btn-ghost btn-sm" href="waitlist.html">Waitlist</a>
+      <span style="font-size:13px;color:var(--text2);" id="adminUser"></span>
+      <button class="btn btn-ghost btn-sm" onclick="handleLogout()">退出登录</button>
+    </div>
+  </div>
+
+  <div class="container">
+    <!-- Stats -->
+    <div class="stats">
+      <div class="stat-card">
+        <div class="stat-label">待处理订单</div>
+        <div class="stat-value" id="statPending">–</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">已确认订单</div>
+        <div class="stat-value green" id="statConfirmed">–</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">订单总数</div>
+        <div class="stat-value blue" id="statTotal">–</div>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <button class="tab active" id="tabPending" onclick="switchTab('pending')">
+        待处理<span class="tab-badge" id="badgePending">–</span>
+      </button>
+      <button class="tab" id="tabConfirmed" onclick="switchTab('confirmed')">
+        已确认<span class="tab-badge" id="badgeConfirmed">–</span>
+      </button>
+    </div>
+
+    <!-- Table -->
+    <div class="table-wrap">
+      <table>
+        <thead id="tableHead"></thead>
+        <tbody id="tableBody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ── Confirm Modal ── -->
+<div class="modal-overlay" id="confirmModal">
+  <div class="modal">
+    <div class="modal-icon">📧</div>
+    <div class="modal-title" id="modalTitle">确认此订单？</div>
+    <div class="modal-body" id="modalBody">确认后将自动生成 CDK 并发送给客户，确认继续吗？</div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal()">取消</button>
+      <button class="btn btn-green" id="modalConfirmBtn" onclick="confirmModalAction()">确认</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Delete Modal ── -->
+<div class="modal-overlay" id="deleteModal">
+  <div class="modal">
+    <div class="modal-icon">🗑️</div>
+    <div class="modal-title">删除订单</div>
+    <div class="modal-body" id="deleteModalBody">确定要删除此订单吗？此操作不可恢复。</div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeDeleteModal()">取消</button>
+      <button class="btn btn-red" id="modalDeleteBtn" onclick="deleteModalAction()">删除</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ── Config ──────────────────────────────────
+  const API_BASE = window.location.origin;
+
+  // ── State ────────────────────────────────────
+  let token = localStorage.getItem('admin_token');
+  let ordersData = { pending: [], confirmed: [] };
+  let currentTab = 'pending';
+  let pendingModalAction = null;
+  let pendingDeleteOrderId = null;
+
+  // ── Init ─────────────────────────────────────
+  document.addEventListener('DOMContentLoaded', () => {
+    if (token) {
+      showAdminView();
+    } else {
+      showLoginView();
+    }
+  });
+
+  // ── Auth ─────────────────────────────────────
+  function showLoginView() {
+    document.getElementById('loginView').style.display = 'flex';
+    document.getElementById('adminView').style.display = 'none';
+  }
+
+  function showAdminView() {
+    document.getElementById('loginView').style.display = 'none';
+    document.getElementById('adminView').style.display = 'block';
+    document.getElementById('adminUser').textContent = localStorage.getItem('admin_user') || 'admin';
+    loadOrders();
+  }
+
+  async function handleLogin(e) {
+    e.preventDefault();
+    const username = document.getElementById('username').value.trim();
+    const password = document.getElementById('password').value;
+    const btn = document.getElementById('loginBtn');
+    const errorEl = document.getElementById('loginError');
+
+    errorEl.style.display = 'none';
+    btn.disabled = true;
+    btn.textContent = '登录中…';
+
+    try {
+      const res = await fetch(`${API_BASE}/api/admin/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password })
+      });
+      const data = await res.json();
+
+      if (data.status === 'ok' && data.token) {
+        localStorage.setItem('admin_token', data.token);
+        token = data.token;
+        localStorage.setItem('admin_user', username);
+        showAdminView();
+      } else {
+        errorEl.textContent = data.message || '用户名或密码错误';
+        errorEl.style.display = 'block';
+      }
+    } catch (err) {
+      errorEl.textContent = '网络错误，请稍后重试';
+      errorEl.style.display = 'block';
+    } finally {
+      btn.disabled = false;
+      btn.textContent = '登录';
+    }
+  }
+
+  function handleLogout() {
+    localStorage.removeItem('admin_token');
+    localStorage.removeItem('admin_user');
+    token = null;
+    showLoginView();
+  }
+
+  // ── API Helpers ──────────────────────────────
+  function getHeaders() {
+    return {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    };
+  }
+
+  async function apiGet(path) {
+    const res = await fetch(`${API_BASE}${path}`, {
+      headers: getHeaders()
+    });
+    if (res.status === 401) {
+      handleLogout();
+      return null;
+    }
+    return res.json();
+  }
+
+  async function apiPost(path, body) {
+    const res = await fetch(`${API_BASE}${path}`, {
+      method: 'POST',
+      headers: getHeaders(),
+      body: JSON.stringify(body)
+    });
+    if (res.status === 401) {
+      handleLogout();
+      return null;
+    }
+    return res.json();
+  }
+
+  // ── Load Orders ──────────────────────────────
+  async function loadOrders() {
+    showLoading(true);
+    try {
+      const data = await apiGet('/api/admin/orders');
+      showLoading(false);
+      if (!data) return;
+
+      ordersData = { pending: data.pending || [], confirmed: data.confirmed || [] };
+
+      document.getElementById('statPending').textContent = ordersData.pending.length;
+      document.getElementById('statConfirmed').textContent = ordersData.confirmed.length;
+      document.getElementById('statTotal').textContent = ordersData.pending.length + ordersData.confirmed.length;
+
+      document.getElementById('badgePending').textContent = ordersData.pending.length;
+      document.getElementById('badgeConfirmed').textContent = ordersData.confirmed.length;
+
+      renderTable();
+    } catch (err) {
+      showLoading(false);
+      toast('加载失败: ' + err.message, 'error');
+    }
+  }
+
+  // ── Render ───────────────────────────────────
+  function renderTable() {
+    const list = ordersData[currentTab] || [];
+    const isPending = currentTab === 'pending';
+
+    const head = document.getElementById('tableHead');
+    const body = document.getElementById('tableBody');
+
+    head.innerHTML = `
+      <tr>
+        <th>订单号</th>
+        <th>客户</th>
+        <th>邮箱</th>
+        <th class="hide-mobile">电话</th>
+        <th class="hide-mobile">产品</th>
+        <th>金额</th>
+        <th class="hide-mobile">时间</th>
+        <th>状态</th>
+        <th>操作</th>
+      </tr>
+    `;
+
+    if (list.length === 0) {
+      body.innerHTML = `
+        <tr>
+          <td colspan="9">
+            <div class="table-empty">
+              <div class="table-empty-icon">📭</div>
+              <div>暂无${isPending ? '待处理' : '已确认'}订单</div>
+            </div>
+          </td>
+        </tr>
+      `;
+      return;
+    }
+
+    body.innerHTML = list.map(order => `
+      <tr>
+        <td><span class="order-id">${order.order_id}</span></td>
+        <td style="font-weight:500;">${escapeHtml(order.name || '–')}</td>
+        <td><a href="mailto:${escapeHtml(order.email || '')}" style="color:var(--primary);">${escapeHtml(order.email || '–')}</a></td>
+        <td class="hide-mobile">${escapeHtml(order.phone || '–')}</td>
+        <td class="hide-mobile"><span class="product-tag">${productLabel(order.product)}</span></td>
+        <td class="price">${order.price || '–'}</td>
+        <td class="hide-mobile">${order.created_at || '–'}</td>
+        <td>
+          <span class="status-badge ${order.status === 'confirmed' ? 'status-confirmed' : 'status-pending'}">
+            ${order.status === 'confirmed' ? '✓ 已确认' : '◔ 待处理'}
+          </span>
+        </td>
+        <td>
+          <div class="actions">
+            ${isPending ? `
+              <button class="btn btn-green btn-sm" onclick="openConfirmModal('${order.order_id}')">确认</button>
+              <button class="btn btn-red btn-sm" onclick="openDeleteModal('${order.order_id}')">删除</button>
+            ` : `
+              <button class="btn btn-ghost btn-sm" onclick="resendConfirm('${order.order_id}')">重发邮件</button>
+              <button class="btn btn-red btn-sm" onclick="openDeleteModal('${order.order_id}')">删除</button>
+            `}
+          </div>
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  function productLabel(tier) {
+    const map = {
+      'pro': 'Pro CDK',
+      'professional': 'Pro CDK',
+      'annual': '年度订阅',
+      'annual_subscriber': '年度订阅',
+      'railsback': 'Railsback',
+      'railsback_annual': 'Railsback',
+      'quarterly': '季度版',
+      'standard': '标准版',
+      'pro_license': 'Pro CDK',
+      'railsback_optimizer': 'Railsback',
+    };
+    return map[tier] || tier || '–';
+  }
+
+  function escapeHtml(str) {
+    if (!str) return '';
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  // ── Tabs ─────────────────────────────────────
+  function switchTab(tab) {
+    currentTab = tab;
+    document.getElementById('tabPending').classList.toggle('active', tab === 'pending');
+    document.getElementById('tabConfirmed').classList.toggle('active', tab === 'confirmed');
+    renderTable();
+  }
+
+  // ── Confirm Modal ─────────────────────────────
+  function openConfirmModal(orderId) {
+    pendingModalAction = orderId;
+    const order = ordersData.pending.find(o => o.order_id === orderId);
+    document.getElementById('modalTitle').textContent = `确认订单 ${orderId}？`;
+    document.getElementById('modalBody').textContent = order
+      ? `客户: ${order.name} (${order.email})，确认后将自动生成 CDK 并发送确认邮件。`
+      : `确认后将自动生成 CDK 并发送给客户。`;
+    document.getElementById('confirmModal').classList.add('show');
+  }
+
+  function closeModal() {
+    document.getElementById('confirmModal').classList.remove('show');
+    pendingModalAction = null;
+  }
+
+  async function confirmModalAction() {
+    const orderId = pendingModalAction;
+    if (!orderId) return;
+    closeModal();
+    showLoading(true);
+    const data = await apiPost('/api/admin/confirm', { order_id: orderId });
+    showLoading(false);
+    if (!data) return;
+    if (data.status === 'ok') {
+      toast(`订单 ${orderId} 已确认，邮件已发送`, 'success');
+      loadOrders();
+    } else {
+      toast('操作失败: ' + (data.message || '未知错误'), 'error');
+    }
+  }
+
+  async function resendConfirm(orderId) {
+    // 重发邮件 = 重新调用 confirm 接口（CDK 已存在，不会重复生成）
+    showLoading(true);
+    const data = await apiPost('/api/admin/confirm', { order_id: orderId });
+    showLoading(false);
+    if (!data) return;
+    if (data.status === 'ok') {
+      toast(`订单 ${orderId} 确认邮件已重发`, 'success');
+    } else {
+      toast('操作失败: ' + (data.message || '未知错误'), 'error');
+    }
+  }
+
+  // ── Delete Modal ─────────────────────────────
+  function openDeleteModal(orderId) {
+    pendingDeleteOrderId = orderId;
+    document.getElementById('deleteModalBody').textContent = `确定要删除订单 ${orderId} 吗？此操作不可恢复。`;
+    document.getElementById('deleteModal').classList.add('show');
+  }
+
+  function closeDeleteModal() {
+    document.getElementById('deleteModal').classList.remove('show');
+    pendingDeleteOrderId = null;
+  }
+
+  async function deleteModalAction() {
+    const orderId = pendingDeleteOrderId;
+    if (!orderId) return;
+    closeDeleteModal();
+    showLoading(true);
+    const data = await apiPost('/api/admin/delete', { order_id: orderId });
+    showLoading(false);
+    if (!data) return;
+    if (data.status === 'ok') {
+      toast(`订单 ${orderId} 已删除`, 'success');
+      loadOrders();
+    } else {
+      toast('删除失败: ' + (data.message || '未知错误'), 'error');
+    }
+  }
+
+  // ── Loading ─────────────────────────────────
+  function showLoading(show) {
+    document.getElementById('loadingOverlay').classList.toggle('show', show);
+  }
+
+  // ── Toast ────────────────────────────────────
+  function toast(msg, type = 'success') {
+    const el = document.getElementById('toast');
+    el.textContent = msg;
+    el.className = `toast show ${type}`;
+    setTimeout(() => { el.classList.remove('show'); }, 3000);
+  }
+</script>
+</body>
+</html>
