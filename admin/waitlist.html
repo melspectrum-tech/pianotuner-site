@@ -47,11 +47,9 @@
   <div id="loginView">
     <form class="card login-card" id="loginForm">
       <h1>🎹 Piano Tuner</h1>
-      <p class="muted">登录管理后台，查看 Waitlist</p>
+      <p class="muted">使用 v0id@melspectrum.com 的邮箱验证与 Passkey 登录，无需后台密码。</p>
       <p id="loginError" class="error" role="alert" hidden></p>
-      <label>管理员账号<input id="username" autocomplete="username" required></label>
-      <label>密码<input id="password" type="password" autocomplete="current-password" required></label>
-      <button class="primary" id="loginBtn">登录</button>
+      <button class="primary" id="loginBtn">重新验证身份</button>
     </form>
   </div>
   <div id="adminView" hidden>
@@ -108,33 +106,30 @@
       token = null;
       subscribers = [];
       $('tableBody').replaceChildren();
-      $('password').value = '';
       $('adminView').hidden = true;
       $('loginView').hidden = false;
+      window.location.href = '/cdn-cgi/access/logout';
     }
 
-    $('loginForm').addEventListener('submit', async event => {
-      event.preventDefault();
+    async function loginFromAccess() {
       $('loginError').hidden = true;
       $('loginBtn').disabled = true;
       try {
-        const username = $('username').value.trim();
         const response = await fetch('/api/admin/login', {
           method: 'POST', headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ username, password: $('password').value })
+          body: '{}'
         });
         const data = await response.json();
-        if (!response.ok || data.status !== 'ok' || !data.token) throw new Error(data.message || '登录失败，请检查账号和密码');
+        if (!response.ok || data.status !== 'ok' || !data.token) throw new Error('身份验证已过期，请重新验证身份');
         token = data.token;
         localStorage.setItem('admin_token', token);
-        localStorage.setItem('admin_user', username);
-        $('password').value = '';
+        localStorage.setItem('admin_user', data.username);
         await loadSubscribers();
       } catch (error) {
         $('loginError').textContent = error.message;
         $('loginError').hidden = false;
       } finally { $('loginBtn').disabled = false; }
-    });
+    }
 
     async function loadSubscribers() {
       $('loginView').hidden = true;
@@ -211,7 +206,11 @@
       for (const key of ['search', 'lang', 'source', 'role']) $(key).value = '';
       renderTable();
     });
-    if (token) loadSubscribers();
+    $('loginForm').addEventListener('submit', event => {
+      event.preventDefault();
+      window.location.href = '/cdn-cgi/access/logout';
+    });
+    loginFromAccess();
   </script>
 </body>
 </html>

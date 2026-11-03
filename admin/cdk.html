@@ -277,15 +277,8 @@
     <div class="login-sub">管理后台</div>
     <div class="login-error" id="loginError"></div>
     <form id="loginForm" onsubmit="handleLogin(event)">
-      <div class="form-group">
-        <label class="form-label">管理员账号</label>
-        <input type="text" id="username" class="form-input" placeholder="admin" autocomplete="username" required>
-      </div>
-      <div class="form-group">
-        <label class="form-label">密码</label>
-        <input type="password" id="password" class="form-input" placeholder="••••••••" autocomplete="current-password" required>
-      </div>
-      <button type="submit" class="btn btn-primary login-btn" id="loginBtn">登录</button>
+      <p style="color:var(--text2);line-height:1.7">使用 v0id@melspectrum.com 的邮箱验证与 Passkey 登录，无需后台密码。</p>
+      <button type="submit" class="btn btn-primary login-btn" id="loginBtn">重新验证身份</button>
     </form>
   </div>
 </div>
@@ -440,23 +433,11 @@
   let currentFilter = 'all';
 
   // ── Init ──
-  document.addEventListener('DOMContentLoaded', () => {
-    if (token) {
-      document.getElementById('loginView').style.display = 'none';
-      document.getElementById('adminView').style.display = 'block';
-      document.getElementById('adminUser').textContent = localStorage.getItem('admin_user') || 'admin';
-      loadCDKs();
-    } else {
-      document.getElementById('loginView').style.display = 'flex';
-      document.getElementById('adminView').style.display = 'none';
-    }
-  });
+  document.addEventListener('DOMContentLoaded', () => handleLogin());
 
   // ── Auth ──
   async function handleLogin(e) {
-    e.preventDefault();
-    const username = document.getElementById('username').value.trim();
-    const password = document.getElementById('password').value;
+    if (e) { e.preventDefault(); window.location.href = '/cdn-cgi/access/logout'; return; }
     const btn = document.getElementById('loginBtn');
     const errorEl = document.getElementById('loginError');
     errorEl.style.display = 'none';
@@ -465,10 +446,11 @@
       const res = await fetch(`${API_BASE}/api/admin/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password })
+        body: '{}'
       });
       const data = await res.json();
-      if (data.status === 'ok' && data.token) {
+      if (res.ok && data.status === 'ok' && data.token) {
+        const username = data.username;
         localStorage.setItem('admin_token', data.token);
         token = data.token;
         localStorage.setItem('admin_user', username);
@@ -477,14 +459,14 @@
         document.getElementById('adminUser').textContent = username;
         loadCDKs();
       } else {
-        errorEl.textContent = data.message || '用户名或密码错误';
+        errorEl.textContent = '身份验证已过期，请重新验证身份';
         errorEl.style.display = 'block';
       }
     } catch (err) {
       errorEl.textContent = '网络错误，请稍后重试';
       errorEl.style.display = 'block';
     } finally {
-      btn.disabled = false; btn.textContent = '登录';
+      btn.disabled = false; btn.textContent = '重新验证身份';
     }
   }
 
@@ -494,6 +476,7 @@
     token = null;
     document.getElementById('loginView').style.display = 'flex';
     document.getElementById('adminView').style.display = 'none';
+    window.location.href = '/cdn-cgi/access/logout';
   }
 
   // ── API Helpers ──
