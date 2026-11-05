@@ -1,5 +1,6 @@
 #!/usr/bin/env node
-// 事务式部署到 origin（root@108.186.222.233:/var/www/html-pianotuner；2026-10-30 起，原 Web-LA 192.255.139.83 只做 BGP/备份）。
+// 事务式部署到 origin（$PT_ORIGIN:/var/www/html-pianotuner）。origin 地址不进公开仓库（红队 2026-11-05 vuln#1），
+// 运行前 `export PT_ORIGIN=root@<主机>`，取值见私有运维笔记。
 // 默认 dry-run，--apply 才执行。只走 DEPLOY 显式清单，全链无 rsync。
 //
 //  0. 预检：工作树干净、verify:root 通过、ssh 可达
@@ -17,7 +18,12 @@ import { DEPLOY, ORIGIN_ONLY, PAGES, REDIRECTS, LANGS, SITE, assertNode24 } from
 import { verifyBuild } from './verify-build.mjs';
 
 assertNode24();
-const HOST = 'root@108.186.222.233';
+const HOST = process.env.PT_ORIGIN ?? '';
+// 严格的 user@host：拒绝空值，也拒绝以 - 开头或带空白/分号的值（会被 ssh/scp 当成选项或多余参数）。
+if (!/^[A-Za-z0-9_][A-Za-z0-9_.-]*@[A-Za-z0-9][A-Za-z0-9.:\[\]-]*$/.test(HOST)) {
+  console.error('deploy: ✗ 未设置有效的 PT_ORIGIN（格式 root@<主机>）。origin 地址不写进公开仓库，请先 export PT_ORIGIN=…');
+  process.exit(1);
+}
 const ROOT = '/var/www/html-pianotuner';
 const RELEASES = '/var/www/releases';
 const LEGACY = `${RELEASES}/pianotuner-legacy`;

@@ -128,7 +128,7 @@ npm run dev       # 客户端渲染的 MPA dev（scripts/vite-plugin-mpa-dev.mjs
 
 ## 部署（`scripts/deploy.mjs`，默认 dry-run，`--apply` 才执行）
 
-origin = `root@108.186.222.233`（web2，SADIDC LAX 2C4G，2026-10-30 起；在 NAT 后、只开 22，网站经 Cloudflare Tunnel `pianotuner-lax2` 进来），docroot `/var/www/html-pianotuner` **是 symlink → `/var/www/releases/pianotuner-<ts>/`**，ORIGIN_ONLY 在 `releases/pianotuner-legacy`。**Web-LA `192.255.139.83` 不再是 origin**（只做 BGP + 异地备份，上面的旧 PianoTuner 服务已停用），树莓派镜像也已下线——别往这两处发。
+origin 是 web2（2026-10-30 起），地址由环境变量 **`PT_ORIGIN=root@<主机>`** 提供，`deploy.mjs` 未设置时直接拒绝运行。🔴 **本仓库是公开的：源站 IP、Tunnel 名、内部监听端口、后台源码（`admin/` 已迁入私有的 pianotuner-backend 仓库）一律不得写进任何被跟踪的文件**（2026-11-05 红队 vuln#1/#2）；取值见私有运维笔记。docroot `/var/www/html-pianotuner` **是 symlink → `/var/www/releases/pianotuner-<ts>/`**，ORIGIN_ONLY 在 `releases/pianotuner-legacy`。旧 origin（Web-LA）已不再是 origin、树莓派镜像也已下线——别往这两处发。
 
 流程：预检（工作树干净、verify:root、ssh）→ tar 备份到 `/root/backups/` 并 `tar -tzf` 验证 → df 预检 → 上传整个 DEPLOY 到新 release（先 hashed 资产后 HTML）→ release 内逐文件 sha256 == 本地 → legacy 里所有不在 DEPLOY、也不在 410 名单里的顶层项 symlink 接入 → `nginx -t` → `mv -T` 原子切换 symlink → ORIGIN_ONLY 指纹前后一致 → 保留最近 3 个 release → 在线验收（26 URL 200 且 body == origin（只允许 email-protection / email-decode / Insights 差异）、6 存根跳转、sitemap/robots、`/api/pianotuner/subscribe` 可达、hero 视频两段 Range 206 字节一致、旧存档页 410、SEO 404：`/__seo-404-check-<ts>.html` 与 `/en/…` 必须真 404 且 body 是对应语言错误页）→ 打印 git 命令。任一步失败：release 目录清理，docroot 不动；切换后验收失败给出一行回退命令。
 
