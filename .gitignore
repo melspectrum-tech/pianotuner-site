@@ -23,3 +23,6 @@ build-stage/
 .build-manifest.json
 source-assets/**/*.ttf
 source-assets/**/*.source.*
+
+# 管理后台源码在私有仓库 pianotuner-backend/admin/（红队 2026-11-05 vuln#2），不得再进本公开仓库
+/admin/
