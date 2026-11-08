@@ -101,6 +101,17 @@ npm run dev       # 客户端渲染的 MPA dev（scripts/vite-plugin-mpa-dev.mjs
   | 按钮 / 卡片线 / 高亮 | CSS | hover / focus | transform、opacity | .25 / .5 |
   | 移动菜单 | CSS（例外） | dialog open | opacity、y | .25 / .5 |
   | 跨页 | View Transition（例外） | 同源导航 | root opacity、y | .25 / .35 |
+  | 音叉助手 | GSAP（Assistant） | 换区块 / 停留 4s / 思考 | 根 x·y·autoAlpha、气泡 y·opacity、波形 scaleY | .8 / .5 / .35 循环 |
+  | 音叉 sheet | CSS（例外） | dialog open | opacity、y | .5 |
+
+## 网站助手「音叉」（2026-11-08，`app/src/components/assistant/`）
+
+- 不是角落聊天气泡：单色音叉停在当前区块标题右上方（文档坐标，随页面滚动），换区块时 GSAP 飞过去；在区块停留 4s 才冒一句提示（每块每会话一次，可「别再主动提示」，存 `localStorage.pt_assistant_quiet`）。首页视频锁定期间不出现。手机（<768px）与 reduced-motion：不飞、不提示，只在页首标题旁静止 + 页脚「问问音叉」入口，打开为底部 `<dialog>` sheet。
+- **只在 effect 里渲染**（LangHint 模式），SSR 产物里没有它；404 页不挂载。根节点 transform / opacity / visibility / position 只归 Assistant 的 GSAP；思考态波形也是 GSAP；CSS 只管 hover / focus（sheet 入场同移动菜单是 CSS 例外）。不新建任何 ScrollTrigger（改动前后数量必须一致）。
+- 区块提示文案写死在 `app/src/data/assistant-hints.js`（零延迟、零成本、受 Gate F 扫描）。verify 拦：key 必须是产物里真实的 section id；文案不得含 `±`。模型只在访客主动提问时调用。
+- 后端是私有仓库里的 `/api/pianotuner/assistant/{chat,handoff}`；回答在服务端过输出守卫（Gate F、精度、外链、prompt 泄漏），前端只当纯文本渲染，绝不 `dangerouslySetInnerHTML`。发邮件只能由访客在转交卡片里勾同意并点发送触发。
+- 对话卡正文用系统字体栈（模型回答的汉字不在 Noto 子集里）；对话卡加 `data-lenis-prevent`。会话 id 与最近 30 条对话存 sessionStorage，跨页接着聊。
+- 本地联调：`.claude/launch.json` 的 `pt-preview-api`（`PT_API_PROXY` 把 `/api` 转到本地 Flask）。没设这个变量时 vite 不代理。
 
 ## 配色：暖中性 + 单一克制的青色（2026-09-28 定稿）
 

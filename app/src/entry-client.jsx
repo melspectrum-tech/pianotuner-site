@@ -7,6 +7,7 @@ import './styles/tokens.css';
 import './styles/app.css';
 import './styles/motion.css';
 import './styles/pages.css';
+import './styles/assistant.css';
 
 const el = document.documentElement;
 const lang = el.dataset.lang === 'en' ? 'en' : 'zh';

@@ -1,0 +1,155 @@
+/* ---------------- 网站助手「音叉」（2026-11-08，components/assistant/） ----------------
+   根节点的 transform / opacity / visibility / position 由 GSAP 写 inline；这里不写 opacity:0 基态（E0）。
+   强调色只做信号：提示小点、发送按钮、链接、擦除线。卡片正文用系统字体栈——模型回答的汉字不在
+   Noto Sans SC 子集里，逐字回退会造成字形混排。 */
+.fork {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 800;
+  width: 36px;
+  height: 36px;
+  color: var(--color-black);
+  --fork-font: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Noto Sans CJK SC', sans-serif;
+}
+.fork[data-island='dark'] { color: var(--color-white); }
+.fork[data-open='true'] { color: var(--color-black); }
+
+.fork__mark {
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  color: inherit;
+  border-radius: 50%;
+  background: transparent;
+}
+.fork__mark svg { display: block; overflow: visible; }
+.fork__dot { fill: var(--accent-fill); opacity: 0; }
+.fork__mark[data-state='hint'] .fork__dot,
+.fork__mark[data-state='thinking'] .fork__dot { opacity: 1; }
+.fork__wave { opacity: .55; }
+.fork__mark[data-state='thinking'] .fork__wave { opacity: 1; }
+.fork__mark:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; box-shadow: 0 0 0 5px var(--accent-fill); }
+@media (hover: hover) and (pointer: fine) {
+  .fork__mark { transition: background-color var(--dur-s) var(--ease-out2); }
+  .fork__mark:hover { background-color: color-mix(in srgb, currentColor 10%, transparent); }
+}
+
+/* 提示气泡：在音叉左侧 */
+.fork__hint {
+  position: absolute;
+  right: 44px;
+  top: 0;
+  width: min(320px, calc(100vw - 96px));
+  padding: 14px 16px 10px;
+  background: var(--color-white);
+  color: var(--color-black);
+  border: 1px solid var(--color-alabaster);
+  font-family: var(--fork-font);
+}
+.fork__hinttext { margin: 0 0 10px; font-size: .9375rem; line-height: 1.5; letter-spacing: -0.01em; }
+.fork__hintfoot { display: flex; gap: 16px; margin-top: 10px; }
+
+.fork__chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.fork__chip {
+  cursor: pointer;
+  text-align: left;
+  padding: 6px 10px;
+  border: 1px dashed var(--color-silver);
+  color: var(--color-black);
+  font-family: var(--fork-font);
+}
+.fork__textbtn { cursor: pointer; color: var(--color-ash-ink); padding: 4px 0; }
+@media (hover: hover) and (pointer: fine) {
+  .fork__chip { transition: border-color var(--dur-s) var(--ease-out2), color var(--dur-s) var(--ease-out2); }
+  .fork__chip:hover { border-color: var(--accent-fill); border-style: solid; color: var(--accent-ink); }
+  .fork__textbtn:hover { color: var(--color-black); }
+}
+
+/* 对话卡：音叉正下方，右边缘对齐 */
+.fork__panel {
+  position: absolute;
+  right: 0;
+  top: 44px;
+  width: min(380px, calc(100vw - 48px));
+  max-height: min(560px, 72vh);
+  display: flex;
+  flex-direction: column;
+  background: var(--color-white);
+  color: var(--color-black);
+  border: 1px solid var(--color-alabaster);
+  font-family: var(--fork-font);
+}
+.fork__head { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; border-bottom: 1px dashed var(--color-alabaster); }
+.fork__notice { margin: 0; padding: 8px 16px; font-size: .75rem; line-height: 1.5; color: var(--color-ash-ink); }
+.fork__notice a { color: var(--accent-ink); }
+.fork__log { flex: 1 1 auto; min-height: 120px; overflow-y: auto; overscroll-behavior: contain; padding: 8px 16px; display: flex; flex-direction: column; gap: 8px; }
+.fork__msg { margin: 0; font-size: .9375rem; line-height: 1.55; letter-spacing: -0.01em; white-space: pre-wrap; overflow-wrap: anywhere; }
+.fork__msg--user { align-self: flex-end; max-width: 85%; padding: 8px 12px; background: var(--color-platinum); }
+.fork__msg--assistant { align-self: flex-start; max-width: 92%; }
+.fork__msg--note { align-self: center; font-size: .8125rem; color: var(--color-ash-ink); }
+.fork__typing { color: var(--color-ash-ink); letter-spacing: .2em; }
+.fork__link { display: flex; margin-top: 6px; }
+.fork__panel > .fork__chips { padding: 0 16px 10px; }
+.fork__form { display: flex; gap: 8px; align-items: flex-end; padding: 10px 16px 14px; border-top: 1px dashed var(--color-alabaster); }
+.fork__form textarea, .fork-handoff textarea, .fork-handoff input[type='email'] {
+  flex: 1 1 auto;
+  width: 100%;
+  resize: none;
+  padding: 8px 10px;
+  border: 1px solid var(--color-silver);
+  background: var(--color-white);
+  color: var(--color-black);
+  font: inherit;
+  font-size: .9375rem;
+  line-height: 1.45;
+}
+.fork__form textarea:focus-visible, .fork-handoff textarea:focus-visible, .fork-handoff input:focus-visible {
+  outline: 2px solid var(--color-black);
+  outline-offset: 0;
+  box-shadow: 0 0 0 4px var(--accent-fill);
+}
+.fork__form .btn, .fork-handoff .btn { flex: none; padding: 10px 14px; }
+.fork__form .btn:disabled, .fork-handoff .btn:disabled { opacity: .45; cursor: default; }
+
+/* 转交卡片 */
+.fork-handoff { display: flex; flex-direction: column; gap: 10px; margin-top: 4px; padding: 12px; border: 1px solid var(--color-alabaster); background: var(--color-porcelain); }
+.fork-handoff__title { margin: 0; color: var(--accent-ink); }
+.fork-handoff label { display: flex; flex-direction: column; gap: 4px; }
+.fork-handoff .fork-handoff__consent { flex-direction: row; align-items: flex-start; gap: 8px; }
+.fork-handoff__consent input { margin-top: 3px; accent-color: var(--color-teal-ink); }
+.fork-handoff__row { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; }
+.fork-handoff__done { margin: 0; color: var(--accent-ink); }
+.fork__err { margin: 0; color: #9b1c1c; }
+
+/* 跳转目标标题下的一次性擦除线（GSAP 自建自删） */
+.fork__flash {
+  position: absolute;
+  z-index: 700;
+  height: 2px;
+  background: var(--accent-fill);
+  transform-origin: left center;
+  pointer-events: none;
+}
+
+/* 手机 / reduced-motion：底部 sheet（原生 <dialog>，CSS 例外同移动菜单） */
+.fork__sheet {
+  margin: auto 0 0;
+  width: 100%;
+  max-width: 100%;
+  max-height: 85dvh;
+  padding: 0;
+  border: 0;
+  border-top: 1px solid var(--color-alabaster);
+  background: var(--color-white);
+}
+.fork__sheet::backdrop { background: rgba(22, 20, 15, 0.6); }
+.fork__sheet .fork__panel { position: static; width: 100%; max-height: 85dvh; border: 0; }
+@media (prefers-reduced-motion: no-preference) {
+  .fork__sheet[open] { animation: fork-sheet-in var(--dur-m) var(--ease-out); }
+}
+@keyframes fork-sheet-in { from { transform: translateY(24px); opacity: 0; } }
+
+@media print { .fork, .fork__flash { display: none; } }

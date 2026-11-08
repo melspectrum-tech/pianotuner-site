@@ -10,6 +10,7 @@ import { createHash } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import { gzipSync } from 'node:zlib';
 import { PAGES, REDIRECTS, ERROR_PAGES, LANGS, GENERATED, STAGE_ONLY, ORIGIN_ONLY, MANIFEST, SITE, STAGE_DIR, assertNode24 } from './paths.mjs';
+import { HINTS } from '../app/src/data/assistant-hints.js';
 
 const SKIP_DIRS = new Set(['node_modules', '.git', '.claude', 'app', 'source-assets', 'scripts', 'build-stage', '.ssr-stage', '.publish-backup']);
 
@@ -223,6 +224,18 @@ export function verifyBuild(dir, { writeManifest = true, prevManifest = null } =
     }
     if (/\.json["')]/.test(body) && /\.js$/.test(f) && /fetch\([^)]*\.json/.test(body)) note(`${relative(dir, f)}: 运行时 fetch .json`);
   }
+
+  // 10b. 网站助手提示：每个 key 都是产物里真实存在的 section id；文案不带任何 ± 精度数字（气泡承载不了脚注）
+  for (const [page, secs] of Object.entries(HINTS)) {
+    if (!PAGES.includes(page)) { note(`assistant-hints: 未知页面 ${page}`); continue; }
+    for (const lang of LANGS) {
+      const f = lang === 'en' ? p('en', `${page}.html`) : p(`${page}.html`);
+      if (!existsSync(f)) continue;
+      const html = readFileSync(f, 'utf8');
+      for (const sid of Object.keys(secs)) if (!html.includes(`id="${sid}"`)) note(`assistant-hints: ${lang}/${page} 没有 #${sid}`);
+    }
+  }
+  if (JSON.stringify(HINTS).includes('±')) note('assistant-hints: 提示文案不得出现 ±（精度数字只能出现在带脚注的页面正文里）');
 
   // 11. 体积预算：入口 JS gzip ≤ 220KB
   for (const f of files.filter((x) => /assets\/index-[^/]+\.js$/.test(x))) {

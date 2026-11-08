@@ -7,6 +7,7 @@ import { useEffect } from 'react';
 //            （type 只在联系页留言表单提交时带，取值是表单的 TYPES key）
 //   T2 高意向 cta-waitlist {at} · cta-pro {at} · demo-complete
 //   T3 参与度 demo-play · scroll-50 · scroll-90 · guide-product-click {guide, target}
+//   网站助手（2026-11-08，无属性，全部 track()）：T1 assistant-handoff · T2 assistant-open / assistant-feedback · T3 assistant-ask
 // 同一个用户动作只能有一种发射方式：静态链接 / 按钮用 data-umami-event(-<key>) 属性，
 // 程序事件（表单成功、视频、滚动、指南正文点击）用 track()。同一元素禁止两种都用。
 // 属性值只用下面的枚举，别随手写新值（nav / navbar / header 会把数据切碎）。
