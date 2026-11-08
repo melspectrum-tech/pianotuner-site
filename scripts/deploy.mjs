@@ -106,7 +106,8 @@ async function verifyLive(releaseSha) {
   }
   for (const u of GONE.map((g) => '/' + encodeURIComponent(g))) {
     const r = await fetch(`${SITE.origin}${u}`);
-    if (r.status !== 410 && r.status !== 404) fails.push(`${u} → ${r.status}（应为 410）`);
+    // 400 也算「已下线」：2026-11-05 起 nginx 对编码字符走白名单，文件名含 | 和 ± 的那条会在 410 之前就被拒
+    if (![410, 404, 400].includes(r.status)) fails.push(`${u} → ${r.status}（应为 410 / 404 / 400）`);
   }
   return fails;
 }
